@@ -23,31 +23,26 @@
 #    see http://www.gnu.org/licenses/.
 #
 # ##############################################################################
-from django.apps import AppConfig
-from django.conf import settings
-from django.utils.module_loading import autodiscover_modules
-from django.utils.translation import gettext_lazy as _
+from django.contrib import admin
+
+from osis_mail_template.models import MailTemplate
 
 
-class OsisMailTemplateConfig(AppConfig):
-    name = 'osis_mail_template'
-    verbose_name = _("Mail templates")
+class MailTemplateAdmin(admin.ModelAdmin):
+    list_display = ['identifier', 'language']
 
-    def ready(self):
-        # This loads mail_templates.py from each app for registration
-        autodiscover_modules('mail_templates')
+    @property
+    def form(self):
+        from osis_mail_template.forms import MailTemplateConfigureForm
 
-        # Add custom CKEditor config
-        settings.CKEDITOR_CONFIGS['osis_mail_template'] = {
-            'linkShowTargetTab': False,
-            'linkShowAdvancedTab': False,
-            'extraPlugins': ','.join(['pastefromword']),
-            'toolbar': 'Custom',
-            'toolbar_Custom': [
-                {'name': 'clipboard', 'items': ['PasteFromWord', '-', 'Undo', 'Redo']},
-                ['Bold', 'Italic', 'Underline'],
-                ['NumberedList', 'BulletedList', '-', 'Blockquote'],
-                ['Link', 'Unlink'],
-                {'name': 'insert', 'items': ['Table']},
-            ],
-        }
+        # As the ModelAdmin is loaded as soon as django is started,
+        # OsisMailTemplateConfig.ready() is not yet called, and thus
+        # the CKEditor is not yet known , so we have to declare this form dynamically
+        class MailTemplateAdminForm(MailTemplateConfigureForm):
+            class Meta(MailTemplateConfigureForm.Meta):
+                fields = '__all__'
+
+        return MailTemplateAdminForm
+
+
+admin.site.register(MailTemplate, MailTemplateAdmin)

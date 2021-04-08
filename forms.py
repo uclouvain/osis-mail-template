@@ -23,31 +23,41 @@
 #    see http://www.gnu.org/licenses/.
 #
 # ##############################################################################
-from django.apps import AppConfig
-from django.conf import settings
-from django.utils.module_loading import autodiscover_modules
+from ckeditor.widgets import CKEditorWidget
+from django import forms
 from django.utils.translation import gettext_lazy as _
 
+from osis_mail_template.models import MailTemplate
 
-class OsisMailTemplateConfig(AppConfig):
-    name = 'osis_mail_template'
-    verbose_name = _("Mail templates")
 
-    def ready(self):
-        # This loads mail_templates.py from each app for registration
-        autodiscover_modules('mail_templates')
-
-        # Add custom CKEditor config
-        settings.CKEDITOR_CONFIGS['osis_mail_template'] = {
-            'linkShowTargetTab': False,
-            'linkShowAdvancedTab': False,
-            'extraPlugins': ','.join(['pastefromword']),
-            'toolbar': 'Custom',
-            'toolbar_Custom': [
-                {'name': 'clipboard', 'items': ['PasteFromWord', '-', 'Undo', 'Redo']},
-                ['Bold', 'Italic', 'Underline'],
-                ['NumberedList', 'BulletedList', '-', 'Blockquote'],
-                ['Link', 'Unlink'],
-                {'name': 'insert', 'items': ['Table']},
-            ],
+class MailTemplateConfigureForm(forms.ModelForm):
+    class Meta:
+        model = MailTemplate
+        fields = [
+            'subject',
+            'body',
+        ]
+        widgets = {
+            'body': CKEditorWidget(config_name='osis_mail_template')
         }
+
+    def check_tokens(self, field):
+        from osis_mail_template import templates
+
+        tokens = templates.get_example_values(self.instance.identifier)
+        data = self.cleaned_data[field]
+        try:
+            data.format(**tokens)
+        except KeyError as e:
+            raise forms.ValidationError(
+                _("The token '%(token)s' is not specified, please use only valid tokens from the list.") % {
+                    'token': e.args[0],
+                }
+            )
+        return data
+
+    def clean_subject(self):
+        return self.check_tokens('subject')
+
+    def clean_body(self):
+        return self.check_tokens('body')
