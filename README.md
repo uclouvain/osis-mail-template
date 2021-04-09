@@ -11,6 +11,7 @@ Requirements
   * Django 2.2+
   * django-ckeditor 5+
   * html2text
+  * django-bootstrap3
 
 
 How to install ?
