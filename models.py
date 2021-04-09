@@ -98,9 +98,9 @@ class MailTemplate(models.Model):
         ]
 
     def __str__(self):
-        return '{0.identifier}-{0.language}'.format(self)
+        return '{}-{}'.format(self.identifier, self.language)
 
-    def _replace_tokens(self, field: str, tokens: Dict[str, str] = None):
+    def _replace_tokens(self, field: str, tokens: Dict[str, str] = None) -> str:
         if tokens is None:
             from osis_mail_template import templates
             tokens = templates.get_example_values(self.identifier)
@@ -109,19 +109,15 @@ class MailTemplate(models.Model):
         except KeyError as e:
             raise MissingToken(e.args[0])
 
-    def get_language_display(self):
-        """Get the human-readable name of this mail template language"""
-        return dict(settings.LANGUAGES).get(self.language)
-
-    def render_subject(self, tokens: Dict[str, str] = None):
+    def render_subject(self, tokens: Dict[str, str] = None) -> str:
         """Renders the subject with the given tokens, or example values"""
         return self._replace_tokens('subject', tokens)
 
-    def body_as_html(self, tokens: Dict[str, str] = None):
+    def body_as_html(self, tokens: Dict[str, str] = None) -> str:
         """Renders the body as HTML with the given tokens, or example values"""
         return self._replace_tokens('body', tokens)
 
-    def body_as_plain(self, tokens: Dict[str, str] = None):
+    def body_as_plain(self, tokens: Dict[str, str] = None) -> str:
         """Renders the body as plain text with the given tokens, or example values"""
         formatted_body = self.body_as_html(tokens)
 

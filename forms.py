@@ -41,7 +41,8 @@ class MailTemplateConfigureForm(forms.ModelForm):
             'body': CKEditorWidget(config_name='osis_mail_template')
         }
 
-    def check_tokens(self, field):
+    def check_tokens(self, field: str) -> str:
+        """Check if used tokens are not undefined by using example values"""
         from osis_mail_template import templates
 
         tokens = templates.get_example_values(self.instance.identifier)
