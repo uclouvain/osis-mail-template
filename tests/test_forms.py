@@ -23,31 +23,40 @@
 #    see http://www.gnu.org/licenses/.
 #
 # ##############################################################################
-from django.apps import AppConfig
-from django.conf import settings
-from django.utils.module_loading import autodiscover_modules
-from django.utils.translation import gettext_lazy as _
+from unittest.mock import patch
+
+from django.test import TestCase
+
+from osis_mail_template.forms import MailTemplateConfigureForm
+from osis_mail_template.models import MailTemplate
 
 
-class OsisMailTemplateConfig(AppConfig):
-    name = 'osis_mail_template'
-    verbose_name = _("Mail templates")
+class MailTemplateModelTest(TestCase):
+    def setUp(self):
+        self.instance = MailTemplate.objects.create(
+            identifier='test-mail-template',
+            language='en',
+        )
 
-    def ready(self):
-        # This loads mail_templates.py from each app for registration
-        autodiscover_modules('mail_templates')
-
-        # Add custom CKEditor config
-        settings.CKEDITOR_CONFIGS['osis_mail_template'] = {
-            'linkShowTargetTab': False,
-            'linkShowAdvancedTab': False,
-            'extraPlugins': ','.join(['pastefromword']),
-            'toolbar': 'Custom',
-            'toolbar_Custom': [
-                {'name': 'clipboard', 'items': ['PasteFromWord', '-', 'Undo', 'Redo']},
-                ['Bold', 'Italic', 'Underline'],
-                ['NumberedList', 'BulletedList', '-', 'Blockquote'],
-                ['Link', 'Unlink'],
-                {'name': 'insert', 'items': ['Table']},
-            ],
+    @patch('osis_mail_template.templates')
+    def test_check_form_valid(self, tpl):
+        tpl.get_example_values.return_value = {
+            'token': 'example value',
         }
+
+        form = MailTemplateConfigureForm(data={
+            'subject': 'This is a test subject {token}',
+            'body': '<p>This is a test body {token}</p>'
+        }, instance=self.instance)
+        self.assertTrue(form.is_valid(), form.errors)
+
+    @patch('osis_mail_template.templates')
+    def test_check_form_invalid_missing_token(self, tpl):
+        tpl.get_example_values.return_value = {}
+
+        form = MailTemplateConfigureForm(data={
+            'subject': 'This is a test subject',
+            'body': '<p>This is a test body {token}</p>'
+        }, instance=self.instance)
+        self.assertFalse(form.is_valid())
+        self.assertIn('body', form.errors)

@@ -7,7 +7,11 @@ OSIS platform.
 Requirements
 ============
 
-* `OSIS Mail Template` requires Django 2.2+
+`OSIS Mail Template` requires:
+  * Django 2.2+
+  * django-ckeditor 5+
+  * html2text
+
 
 How to install ?
 ================
@@ -50,25 +54,82 @@ To declare a mail template within a Django application:
 ```
 
 * Register as many mail templates as you want, it is advised to use constants
-  for mail template identifiers to prevent mismatching
+  for mail template identifiers to prevent mismatching, and specify a tag to
+  find easily the mail in administration. 
 
 ```python
 from django.utils.translation import gettext_lazy as _
 from osis_mail_template import templates, Token
 
 OSIS_ADMISSION_MAIL_CREATE = 'osis-admission-creation'
-templates.register(OSIS_ADMISSION_MAIL_CREATE, tokens=[
-    Token(
-        name='person_first_name',
-        description=_("The first name of the person concerned by the admission"),
-        example="John",
-    ),
-    Token(
-      'person_last_name',
-      _("The last name of the person concerned by the admission"),
-      "Doe",
-    ),
-])
+templates.register(
+    OSIS_ADMISSION_MAIL_CREATE,
+    description=_("A short description about the mail template and when it is sent"),
+    tokens=[
+      Token(
+          name='person_first_name',
+          description=_("The first name of the person concerned by the admission"),
+          example="John",
+      ),
+      Token(
+        'person_last_name',
+        _("The last name of the person concerned by the admission"),
+        "Doe",
+      ),
+    ],
+    tag='Admission',
+)
+```
+
+* To prevent mail which templates have not been configured, it is strongly recommended to create a migration to initialize the content of a newly registered mail template:
+
+```python
+from django.db import migrations
+
+from myapp.mail_templates import MY_TEMPLATE_IDENTIFIER
+
+
+def forward(apps, schema_editor):
+    MailTemplate = apps.get_model('osis_mail_template', 'MailTemplate')
+
+    MailTemplate.objects.get_or_create(
+        identifier=MY_TEMPLATE_IDENTIFIER,
+        language='en',
+        defaults=dict(
+            subject='[OSIS] A dummy subject',
+            body='''Hello {first_name} {last_name},
+
+This is the mail template to notify you about {reason}.
+
+---
+The OSIS Team
+''',
+        )
+    )
+    MailTemplate.objects.get_or_create(
+        identifier=MY_TEMPLATE_IDENTIFIER,
+        language='fr-be',
+        defaults=dict(
+            subject='[OSIS] Un sujet bidon',
+            body='''Bonjour {first_name} {last_name},
+
+Ceci est un template d'email à propos de {reason}.
+
+---
+L'équipe OSIS
+''',
+        )
+    )
+
+
+class Migration(migrations.Migration):
+    dependencies = [
+        ...
+    ]
+
+    operations = [
+        migrations.RunPython(forward, migrations.RunPython.noop)
+    ]
 ```
 
 Configuring mail templates
