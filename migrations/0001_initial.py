@@ -2,6 +2,8 @@
 
 from django.db import migrations, models
 
+from osis_mail_template.models import check_mail_template_identifier
+
 
 class Migration(migrations.Migration):
 
@@ -15,8 +17,8 @@ class Migration(migrations.Migration):
             name='MailTemplate',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('identifier', models.CharField(max_length=255, verbose_name='Identifier')),
-                ('language', models.CharField(max_length=25, verbose_name='Language')),
+                ('identifier', models.CharField(max_length=255, verbose_name='Identifier', validators=[check_mail_template_identifier])),
+                ('language', models.CharField(choices=[('en', 'English'), ('fr-be', 'French')], max_length=25, verbose_name='Language')),
                 ('subject', models.CharField(max_length=255, verbose_name='Subject')),
                 ('body', models.TextField(verbose_name='Body')),
             ],
