@@ -24,8 +24,11 @@
 #
 # ##############################################################################
 from .registry import MailTemplateRegistry, Token
+from .utils import generate_email, render_email_content
 
 __all__ = [
+    'generate_email',
+    'render_email_content',
     'templates',
     'Token',
 ]
