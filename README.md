@@ -155,7 +155,7 @@ Rendering a mail template
 -------------------------
 
 Upon an action of its choosing, the calling module can render a mail template
-with the function `generate_email(mail_template_id, tokens, recipients, language, sender=settings.DEFAULT_FROM_EMAIL)`
+with the function `generate_email(mail_template_id, language, tokens, recipients, sender)`
 . It will return an EmailMessage object ready to be sent through.
 
 The following parameters are expected:
@@ -180,8 +180,8 @@ Overriding the HTML email base template
 ---------------------------------------
 
 The HTML configured through the editor is, at rendering, injected into a base
-template located at `mail_template/base_email.html` in which the content is
-located inside the content variable.
+template located at `osis_mail_template/base_email.html` in which the content is
+located inside the `content` variable.
 
 For the plain text alternative, the HTML content is passed through
 the `html2text` function configured will the following parameters:
@@ -199,7 +199,7 @@ Getting only the rendered content
 It may be useful to get only the content of the subject and body of a mail
 message, prior to sending it, so that the user can modify the contents. OSIS
 Mail template allows that by providing
-a `render_tokens(mail_template_id, tokens, language)` function, which returns a
+a `render_email_content(mail_template_id, language, tokens)` function, which returns a
 tuple of subject and content.
 
 This can be later used in a form for sending customized content by the user.
