@@ -25,7 +25,6 @@
 # ##############################################################################
 from typing import Dict
 
-import html2text
 from django.conf import settings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -36,6 +35,7 @@ from osis_mail_template.exceptions import (
     UnknownMailTemplateIdentifier,
     UnknownLanguage,
 )
+from osis_mail_template.utils import transform_html_to_text
 
 
 class MailTemplateManager(models.Manager):
@@ -120,12 +120,4 @@ class MailTemplate(models.Model):
     def body_as_plain(self, tokens: Dict[str, str] = None) -> str:
         """Renders the body as plain text with the given tokens, or example values"""
         formatted_body = self.body_as_html(tokens)
-
-        h = html2text.HTML2Text()
-        h.links_each_paragraph = True
-        h.body_width = 80
-        h.inline_links = False
-        h.wrap_links = False
-        h.wrap_list_items = True
-        h.use_automatic_links = True
-        return h.handle(formatted_body)
+        return transform_html_to_text(formatted_body)

@@ -62,6 +62,7 @@ class MailTemplateModelTest(SimpleTestCase):
         with patch('osis_mail_template.templates') as tpl:
             tpl.get_example_values.return_value = {
                 'token': 'example value',
+                'another': 'another value',
             }
             self.assertEqual(self.template.render_subject(), 'This is a test subject example value')
 

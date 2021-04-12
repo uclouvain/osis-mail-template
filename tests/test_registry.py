@@ -25,13 +25,12 @@
 # ##############################################################################
 
 from django.test import SimpleTestCase
-from django.utils.translation import gettext_lazy as _
 
-from osis_mail_template.registry import MailTemplateRegistry, Token
 from osis_mail_template.exceptions import (
     DuplicateMailTemplateIdentifier,
     UnknownMailTemplateIdentifier,
 )
+from osis_mail_template.registry import MailTemplateRegistry, Token
 
 
 class MailTemplateRegistryTest(SimpleTestCase):
@@ -42,19 +41,19 @@ class MailTemplateRegistryTest(SimpleTestCase):
 
     def test_registry_registers_and_unregisters(self):
         token = Token('test-token', 'Example token', 'value')
-        self.registry.register(self.IDENTIFIER, _("My awesome template"), [token])
+        self.registry.register(self.IDENTIFIER, "My awesome template", [token])
         self.assertIn(self.IDENTIFIER, self.registry.get_mail_templates())
         self.assertEqual([token], self.registry.get_tokens(self.IDENTIFIER))
-        self.assertEqual(_("My awesome template"), self.registry.get_description(self.IDENTIFIER))
+        self.assertEqual("My awesome template", self.registry.get_description(self.IDENTIFIER))
         self.assertIn('test-token', self.registry.get_example_values(self.IDENTIFIER))
         self.registry.unregister(self.IDENTIFIER)
         self.assertNotIn(self.IDENTIFIER, self.registry.get_mail_templates())
 
     def test_cant_register_twice(self):
         token = Token('test-token', 'Example token', 'value')
-        self.registry.register(self.IDENTIFIER, _("My awesome template"), [token])
+        self.registry.register(self.IDENTIFIER, "My awesome template", [token])
         with self.assertRaises(DuplicateMailTemplateIdentifier):
-            self.registry.register(self.IDENTIFIER, _("My other template"), [])
+            self.registry.register(self.IDENTIFIER, "My other template", [])
 
     def test_cant_unregister_bad_identifier(self):
         with self.assertRaises(UnknownMailTemplateIdentifier):
@@ -64,7 +63,7 @@ class MailTemplateRegistryTest(SimpleTestCase):
 
     def test_get_list_by_tag_is_sorted(self):
         token = Token("test-token", "Example token", "value")
-        self.registry.register(self.IDENTIFIER, _("My awesome template"), [token], tag="Last")
-        self.registry.register('test-other-template', _("My other template"), [token], tag="First")
+        self.registry.register(self.IDENTIFIER, "My awesome template", [token], tag="Last")
+        self.registry.register('test-other-template', "My other template", [token], tag="First")
 
         self.assertListEqual(["First", "Last"], list(self.registry.get_list_by_tag().keys()))

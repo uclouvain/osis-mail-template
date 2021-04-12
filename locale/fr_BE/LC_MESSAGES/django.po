@@ -1,0 +1,103 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-04-09 15:26+0200\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Body"
+msgstr "Corps"
+
+msgid "Cancel"
+msgstr "Annuler"
+
+#, python-format
+msgid "Change <em>%(description)s</em> mail template"
+msgstr "Modifier le template d'e-mail <em>%(description)s</em>"
+
+msgid "Configure"
+msgstr "Configurer"
+
+msgid "Description"
+msgstr ""
+
+msgid "English"
+msgstr "Anglais"
+
+msgid "Example"
+msgstr "Exemple"
+
+msgid "HTML"
+msgstr ""
+
+msgid "Identifier"
+msgstr "Identifiant"
+
+msgid "Language"
+msgstr "Langue"
+
+msgid "Mail template"
+msgstr "Template d'e-mail"
+
+msgid "Mail templates"
+msgstr "Templates d'e-mail"
+
+msgid "Plain text"
+msgstr ""
+
+msgid "Preview"
+msgstr "Prévisualiser"
+
+msgid "Save"
+msgstr "Enregistrer"
+
+msgid "Subject"
+msgstr "Sujet"
+
+#, python-format
+msgid "The language '%(language)s' is not defined in settings.LANGUAGES."
+msgstr "La langue '%(language)s' n'est pas définie dans settings.LANGUAGES."
+
+#, python-format
+msgid ""
+"The mail template '%(identifier)s' has no content for language %(language)s."
+msgstr ""
+"Le template d'e-mail '%(identifier)s' n'a pas de contenu pour la langue "
+"%(language)s."
+
+#, python-format
+msgid "The mail template '%(identifier)s' has no content."
+msgstr "Le template d'e-mail '%(identifier)s' n'a pas de contenu."
+
+#, python-format
+msgid "The mail template '%(identifier)s' is already registered."
+msgstr "Le template d'e-mail '%(identifier)s' est déjà défini"
+
+#, python-format
+msgid "The mail template '%(identifier)s' is not registered."
+msgstr "Le template d'e-mail '%(identifier)s' n'est pas défini"
+
+#, python-format
+msgid ""
+"The token '%(token)s' is not specified, please use only valid tokens from "
+"the list."
+msgstr ""
+"Le token '%(token)s' n'est pas spécifié, veuillez utiliser uniquement des "
+"tokens valides depuis la liste."
+
+#, python-format
+msgid "The token '%(token)s' value has to be passed for rendering."
+msgstr "La valeur du token '%(token)s' n'a pas été définie pendant le rendu."
+
+msgid "Token"
+msgstr ""
+
+msgid "Tokens that can be used for replacement"
+msgstr "Tokens pouvant être utilisés pour remplacement"
