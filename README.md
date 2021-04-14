@@ -140,7 +140,7 @@ As soon as a mail template is declared, it can be configured for both French and
 English in the administration.
 
 A list of all mail template is available for users who have the
-permission `mail_templates.configure`, with the option to configure or preview a
+permission `osis_mail_template.configure`, with the option to configure or preview a
 mail template :
 
 * when configuring, 2 forms (one for each language) with the list of tokens will
