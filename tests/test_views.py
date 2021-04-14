@@ -23,33 +23,31 @@
 #    see http://www.gnu.org/licenses/.
 #
 # ##############################################################################
+from unittest.mock import patch
+
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from django.urls import reverse
 from mock import patch
 
+from base.tests.factories.user import UserFactory
 from osis_mail_template import Token
 from osis_mail_template.models import MailTemplate
 
 
-class TestMailTemplateListView(TestCase):
-    def test_list(self):
-        with patch('osis_mail_template.templates') as tpl:
-            tpl.get_list_by_tag.return_value = {
-                'some tag': {
-                    'identifier': 'Custom description'
-                }
-            }
-            response = self.client.get(reverse('osis_mail_template:list'))
-            self.assertContains(response, "Custom description")
-
-
-class TestMailTemplateConfigureView(TestCase):
+class TestMailTemplateViews(TestCase):
     registry = None
     TEMPLATE_ID = 'test-identifier'
 
     @classmethod
     def setUpTestData(cls):
         cls.registry = patch('osis_mail_template.templates', **{
+            'get_list_by_tag.return_value': {
+                'some tag': {
+                    'identifier': 'Custom description'
+                }
+            },
             'get_tokens.return_value': [
                 Token('token', 'Token description', 'Example value'),
             ],
@@ -60,8 +58,14 @@ class TestMailTemplateConfigureView(TestCase):
         })
         cls.url = reverse('osis_mail_template:change', kwargs={'identifier': cls.TEMPLATE_ID})
         cls.registry.start()
+        cls.user = UserFactory()
+        cls.user.user_permissions.add(Permission.objects.create(
+            content_type=ContentType.objects.get_for_model(MailTemplate),
+            codename='configure',
+        ))
 
     def setUp(self):
+        self.client.force_login(self.user)
         self.template = MailTemplate.objects.create(
             identifier=self.TEMPLATE_ID,
             language='en',
@@ -72,6 +76,10 @@ class TestMailTemplateConfigureView(TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.registry.stop()
+
+    def test_list(self):
+        response = self.client.get(reverse('osis_mail_template:list'))
+        self.assertContains(response, "Custom description")
 
     def test_get(self):
         response = self.client.get(self.url)
@@ -101,4 +109,3 @@ class TestMailTemplateConfigureView(TestCase):
         response = self.client.get(url)
         self.assertContains(response, "This is a subject with a Example value")
         self.assertContains(response, "<p>Hello,</p><p>This is a body with a Example value</p><p>--<br>The OSIS Team</p>")
-

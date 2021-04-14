@@ -28,10 +28,12 @@ from django.views import generic
 
 from osis_mail_template.forms import MailTemplateConfigureForm
 from osis_mail_template.models import MailTemplate
+from osis_role.contrib.views import PermissionRequiredMixin
 
 
-class MailTemplateListView(generic.TemplateView):
+class MailTemplateListView(PermissionRequiredMixin, generic.TemplateView):
     template_name = 'osis_mail_template/list.html'
+    permission_required = 'osis_mail_template.configure'
 
     def get_context_data(self, **kwargs):
         from osis_mail_template import templates
@@ -41,10 +43,11 @@ class MailTemplateListView(generic.TemplateView):
         return context
 
 
-class MailTemplateChangeView(generic.FormView):
+class MailTemplateChangeView(PermissionRequiredMixin, generic.FormView):
     forms = None
     template_name = 'osis_mail_template/change.html'
     success_url = reverse_lazy('osis_mail_template:list')
+    permission_required = 'osis_mail_template.configure'
 
     def get_forms(self, form_class=None):
         if not self.forms:
@@ -86,8 +89,9 @@ class MailTemplateChangeView(generic.FormView):
         return kwargs
 
 
-class MailTemplatePreview(generic.TemplateView):
+class MailTemplatePreview(PermissionRequiredMixin, generic.TemplateView):
     template_name = 'osis_mail_template/preview.html'
+    permission_required = 'osis_mail_template.configure'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
