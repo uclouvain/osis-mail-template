@@ -82,45 +82,34 @@ templates.register(
 )
 ```
 
-* To prevent mail which templates have not been configured, it is strongly recommended to create a migration to initialize the content of a newly registered mail template:
+* To prevent mail which templates have not been configured, it is strongly recommended creating a migration to initialize the content of a newly registered mail template:
 
 ```python
 from django.db import migrations
+from osis_mail_template import MailTemplateMigration
 
 from myapp.mail_templates import MY_TEMPLATE_IDENTIFIER
 
+subjects = {
+  'en': '[OSIS] A dummy subject',
+  'fr-be': '[OSIS] Un sujet bidon'
+}
+contents = {
+  'en': '''<p>Hello {first_name} {last_name},</p>
 
-def forward(apps, schema_editor):
-    MailTemplate = apps.get_model('osis_mail_template', 'MailTemplate')
+<p>This is the mail template to notify you about {reason}.</p>
 
-    MailTemplate.objects.get_or_create(
-        identifier=MY_TEMPLATE_IDENTIFIER,
-        language='en',
-        defaults=dict(
-            subject='[OSIS] A dummy subject',
-            body='''Hello {first_name} {last_name},
-
-This is the mail template to notify you about {reason}.
-
----
-The OSIS Team
+<p>---<br/>
+The OSIS Team</p>
 ''',
-        )
-    )
-    MailTemplate.objects.get_or_create(
-        identifier=MY_TEMPLATE_IDENTIFIER,
-        language='fr-be',
-        defaults=dict(
-            subject='[OSIS] Un sujet bidon',
-            body='''Bonjour {first_name} {last_name},
+  'fr-br': '''<p>Bonjour {first_name} {last_name},</p>
 
-Ceci est un template d'email à propos de {reason}.
+<p>Ceci est un template d'email à propos de {reason}.</p>
 
----
-L'équipe OSIS
+<p>---<br/>
+L'équipe OSIS</p>
 ''',
-        )
-    )
+}
 
 
 class Migration(migrations.Migration):
@@ -129,7 +118,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(forward, migrations.RunPython.noop)
+        MailTemplateMigration(MY_TEMPLATE_IDENTIFIER, subjects, contents)
     ]
 ```
 
