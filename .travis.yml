@@ -25,6 +25,7 @@ install:
   - pip install -r requirements.txt
   - rm -Rf osis_mail_template
   - ln -s $PROJECT_DIR osis_mail_template
+  - pip install -r osis_mail_template/requirements.txt
   - cp osis_mail_template/.coveragerc .
 
 before_script:
