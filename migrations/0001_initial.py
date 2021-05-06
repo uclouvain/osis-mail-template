@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('identifier', models.CharField(max_length=255, verbose_name='Identifier', validators=[check_mail_template_identifier])),
-                ('language', models.CharField(choices=[('en', 'English'), ('fr-be', 'French')], max_length=25, verbose_name='Language')),
+                ('language', models.CharField(choices=[('fr-be', 'French'), ('en', 'English')], max_length=25, verbose_name='Language')),
                 ('subject', models.CharField(max_length=255, verbose_name='Subject')),
                 ('body', models.TextField(verbose_name='Body')),
             ],
