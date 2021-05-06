@@ -1,4 +1,7 @@
-django>=2.2
-django-bootstrap3
-django-ckeditor>=5.7,<6.0
+# These are already in the main project
+# django>=2.2
+# django-bootstrap3>=11.1.0
+# django-ckeditor>=5.7,<6.0
+#
+# Real dependencies
 html2text>=2020
