@@ -50,7 +50,7 @@ msgid "Mail templates"
 msgstr "Templates d'e-mail"
 
 msgid "Plain text"
-msgstr ""
+msgstr "Texte brut"
 
 msgid "Preview"
 msgstr "Prévisualiser"
