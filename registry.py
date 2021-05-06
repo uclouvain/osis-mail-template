@@ -82,9 +82,11 @@ class MailTemplateRegistry:
         return self.get_mail_template(identifier)[0]
 
     def get_list_by_tag(self) -> Dict[str, Dict[str, str]]:
-        ret = defaultdict(OrderedDict)
+        ret = OrderedDict()
         for identifier, template in sorted(self.templates.items(), key=lambda i: i[1][2]):
             tag = template[2]
+            if tag not in ret:
+                ret[tag] = {}
             description = template[0]
             ret[tag][identifier] = description
         return ret

@@ -102,7 +102,7 @@ contents = {
 <p>---<br/>
 The OSIS Team</p>
 ''',
-  'fr-br': '''<p>Bonjour {first_name} {last_name},</p>
+  'fr-be': '''<p>Bonjour {first_name} {last_name},</p>
 
 <p>Ceci est un template d'email à propos de {reason}.</p>
 
