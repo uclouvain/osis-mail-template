@@ -23,7 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 # ##############################################################################
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from typing import List, Dict, Tuple
 
 from osis_mail_template.exceptions import (
@@ -82,9 +82,9 @@ class MailTemplateRegistry:
         return self.get_mail_template(identifier)[0]
 
     def get_list_by_tag(self) -> Dict[str, Dict[str, str]]:
-        ret = defaultdict(dict)
+        ret = defaultdict(OrderedDict)
         for identifier, template in sorted(self.templates.items(), key=lambda i: i[1][2]):
             tag = template[2]
             description = template[0]
             ret[tag][identifier] = description
-        return dict(ret)
+        return ret
