@@ -1,0 +1,50 @@
+language: python
+python: "3.5.5"
+
+cache: pip
+
+services:
+  - postgresql
+addons:
+    postgresql: "9.6"
+    apt:
+      packages:
+      - postgresql-9.6-postgis-2.4
+
+install:
+  - export PROJECT_DIR=`pwd`
+  - test $TRAVIS_PULL_REQUEST = "false" && export OSIS_BRANCH=$TRAVIS_PULL_REQUEST_BRANCH || export OSIS_BRANCH=$TRAVIS_BRANCH
+  - echo $OSIS_BRANCH
+  - cd /tmp
+  - git clone https://github.com/uclouvain/osis.git
+  - cd osis
+  - git checkout $OSIS_BRANCH
+  - git pull origin $OSIS_BRANCH
+  - git submodule init
+  - git submodule update
+  - pip install -r requirements.txt
+  - rm -Rf osis_mail_template
+  - ln -s $PROJECT_DIR osis_mail_template
+  - pip install -r osis_mail_template/requirements.txt
+  - cp osis_mail_template/.coveragerc .
+
+before_script:
+  - cp .env.example .env
+  - echo 'INSTALLED_APPS += ("osis_mail_template",)' >> backoffice/settings/local.py
+  - echo 'APPS_TO_TEST += ("osis_mail_template",)' >> backoffice/settings/local.py
+  - echo 'LOCALE_PATHS = [BASE_DIR + "/osis_mail_template/locale"]' >> backoffice/settings/local.py
+  - echo >> .env
+  - echo "POSTGRES_USER = 'postgres'" >> .env
+  - echo "POSTGRES_PASSWORD = ''" >> .env
+  - echo "AUTHENTICATION_BACKENDS=osis_role.contrib.permissions.ObjectPermissionBackend" >> .env
+  - python3 manage.py compilemessages
+  - psql -c 'create database osis_local;' -U postgres
+  - psql -c 'create extension postgis;' -U postgres -d osis_local
+
+script:
+  - coverage run manage.py test --exclude-tag=selenium osis_mail_template
+  - ./manage.py makemigrations --check osis_mail_template
+
+after_success:
+ - pip install python-coveralls
+ - coveralls --base_dir /home/travis/build/uclouvain/osis-mail-template/
