@@ -12,6 +12,7 @@ Requirements
   * django-ckeditor 5+
   * html2text
   * django-bootstrap3
+  * django-autocomplete-light 3.5.1+
 
 
 How to install ?
@@ -193,4 +194,31 @@ a `render_email_content(mail_template_id, language, tokens)` function, which ret
 tuple of subject and content.
 
 This can be later used in a form for sending customized content by the user.
+
+Getting a selector of mail templates
+------------------------------------
+
+It may be useful to offer the front-end user the possibility to select the mail template.
+OSIS Mail template allows that by providing autocomplete views, usable with a
+`ListSelect2` widget from django-autocomplete-light.
+
+```python
+from  django import forms
+from dal import autocomplete, forward
+
+class MailTemplateConfigureForm(forms.Form):
+    # Example for autocompleting on all templates
+    template = forms.CharField(
+        widget=autocomplete.ListSelect2(url="osis_mail_template:autocomplete")
+    )
+    # Example for autocompleting on templates for a selected tag
+    template_filtered_by_tag = forms.CharField(
+        widget=autocomplete.ListSelect2(
+          url="osis_mail_template:autocomplete",
+          forward=(forward.Const('tag', 'Admission'),)
+        )
+    )
+```
+
+This can be later used in the form for sending customized content by the user.
 
