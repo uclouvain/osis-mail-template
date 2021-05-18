@@ -23,29 +23,39 @@
 #    see http://www.gnu.org/licenses/.
 #
 # ##############################################################################
-from typing import Dict
 
-from django.conf import settings
-from django.db.migrations import RunPython
+from django.db import migrations
+from osis_mail_template import MailTemplateMigration
 
-from osis_mail_template.exceptions import EmptyMailTemplateContent
+from ..mail_templates import MAIL_TEMPLATE_TEST_MAIL
+
+subjects = {
+  'en': '[OSIS] A dummy subject',
+  'fr-be': '[OSIS] Un sujet bidon'
+}
+contents = {
+  'en': '''<p>Hello {first_name} {last_name},</p>
+
+<p>This is the mail template to notify you about {reason}.</p>
+
+<p>---<br/>
+The OSIS Team</p>
+''',
+  'fr-be': '''<p>Bonjour {first_name} {last_name},</p>
+
+<p>Ceci est un template d'email à propos de {reason}.</p>
+
+<p>---<br/>
+L'équipe OSIS</p>
+''',
+}
 
 
-class MailTemplateMigration(RunPython):
-    def __init__(self, identifier: str, subjects: Dict[str, str], contents: Dict[str, str]):
-        def forward(apps, schema_editor):
-            MailTemplate = apps.get_model('osis_mail_template', 'MailTemplate')
-            for lang, _ in settings.LANGUAGES:
-                try:
-                    MailTemplate.objects.get_or_create(
-                        identifier=identifier,
-                        language=lang,
-                        defaults=dict(
-                            subject=subjects[lang],
-                            body=contents[lang],
-                        )
-                    )
-                except KeyError:  # pragma: no cover
-                    raise EmptyMailTemplateContent(identifier, lang)
+class Migration(migrations.Migration):
+    dependencies = [
+        ('osis_mail_template', '0001_initial'),
+    ]
 
-        super().__init__(forward, RunPython.noop)
+    operations = [
+        MailTemplateMigration(MAIL_TEMPLATE_TEST_MAIL, subjects, contents)
+    ]

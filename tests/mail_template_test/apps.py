@@ -23,29 +23,8 @@
 #    see http://www.gnu.org/licenses/.
 #
 # ##############################################################################
-from typing import Dict
-
-from django.conf import settings
-from django.db.migrations import RunPython
-
-from osis_mail_template.exceptions import EmptyMailTemplateContent
+from django.apps import AppConfig
 
 
-class MailTemplateMigration(RunPython):
-    def __init__(self, identifier: str, subjects: Dict[str, str], contents: Dict[str, str]):
-        def forward(apps, schema_editor):
-            MailTemplate = apps.get_model('osis_mail_template', 'MailTemplate')
-            for lang, _ in settings.LANGUAGES:
-                try:
-                    MailTemplate.objects.get_or_create(
-                        identifier=identifier,
-                        language=lang,
-                        defaults=dict(
-                            subject=subjects[lang],
-                            body=contents[lang],
-                        )
-                    )
-                except KeyError:  # pragma: no cover
-                    raise EmptyMailTemplateContent(identifier, lang)
-
-        super().__init__(forward, RunPython.noop)
+class MailTemplateTestConfig(AppConfig):
+    name = 'osis_mail_template.tests.mail_template_test'

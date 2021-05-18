@@ -30,7 +30,7 @@ install:
 
 before_script:
   - cp .env.example .env
-  - echo 'INSTALLED_APPS += ("osis_mail_template",)' >> backoffice/settings/local.py
+  - echo 'INSTALLED_APPS += ("osis_mail_template", "osis_mail_template.tests.mail_template_test")' >> backoffice/settings/local.py
   - echo 'APPS_TO_TEST += ("osis_mail_template",)' >> backoffice/settings/local.py
   - echo 'LOCALE_PATHS = [BASE_DIR + "/osis_mail_template/locale"]' >> backoffice/settings/local.py
   - echo >> .env
