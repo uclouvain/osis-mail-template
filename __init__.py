@@ -23,7 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 # ##############################################################################
-from .registry import MailTemplateRegistry, Token
+from .registry import MailTemplateRegistry, Template, Token
 from .utils import generate_email, render_email_content
 from .contrib.migrations import MailTemplateMigration
 
@@ -33,6 +33,7 @@ __all__ = [
     'templates',
     'MailTemplateMigration',
     'Token',
+    'Template',
 ]
 
 default_app_config = 'osis_mail_template.apps.OsisMailTemplateConfig'

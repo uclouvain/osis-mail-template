@@ -23,24 +23,33 @@
 #    see http://www.gnu.org/licenses/.
 #
 # ##############################################################################
-from collections import defaultdict, OrderedDict
-from typing import List, Dict, Tuple
+from collections import OrderedDict
+from typing import List, Dict, NamedTuple
 
 from osis_mail_template.exceptions import (
     DuplicateMailTemplateIdentifier,
     UnknownMailTemplateIdentifier,
 )
 
+"""
+A token describing a placeholder that will be replaced when rendering email content
+"""
+Token = NamedTuple('Token', [
+    ('name', str),
+    ('description', str),
+    ('example', str),
+])
 
-class Token:
-    """
-    A token describing a placeholder that will be replaced when rendering email content
-    """
-
-    def __init__(self, name: str, description: str, example: str) -> None:
-        self.name = name
-        self.description = description
-        self.example = example
+"""
+A template describing a message type
+"""
+Template = NamedTuple('Template', [
+    ('identifier', str),
+    ('description', str),
+    ('tokens', List[Token]),
+    ('tag', str),
+])
+Template._field_defaults = {'tag' : ''}
 
 
 class MailTemplateRegistry:
@@ -57,36 +66,34 @@ class MailTemplateRegistry:
     def register(self, identifier: str, description: str, tokens: List[Token], tag: str = '') -> None:
         if identifier in self.templates:
             raise DuplicateMailTemplateIdentifier(identifier)
-        self.templates[identifier] = (description, tokens, tag)
+        self.templates[identifier] = Template(identifier, description, tokens, tag)
 
     def unregister(self, identifier: str) -> None:
         if identifier not in self.templates:
             raise UnknownMailTemplateIdentifier(identifier)
         del self.templates[identifier]
 
-    def get_mail_templates(self) -> Dict[str, Tuple[str, List[Token]]]:
+    def get_mail_templates(self) -> Dict[str, Template]:
         return self.templates
 
-    def get_mail_template(self, identifier: str) -> Tuple[str, List[Token], str]:
+    def get_mail_template(self, identifier: str) -> Template:
         if identifier not in self.templates:
             raise UnknownMailTemplateIdentifier(identifier)
         return self.templates[identifier]
 
     def get_tokens(self, identifier: str) -> List[Token]:
-        return self.get_mail_template(identifier)[1]
+        return self.get_mail_template(identifier).tokens
 
     def get_example_values(self, identifier: str) -> Dict[str, str]:
-        return {t.name: t.example for t in self.get_tokens(identifier)}
+        return {t.name: t.example for t in self.get_mail_template(identifier).tokens}
 
     def get_description(self, identifier: str) -> str:
-        return self.get_mail_template(identifier)[0]
+        return self.get_mail_template(identifier).description
 
     def get_list_by_tag(self) -> Dict[str, Dict[str, str]]:
         ret = OrderedDict()
-        for identifier, template in sorted(self.templates.items(), key=lambda i: i[1][2]):
-            tag = template[2]
-            if tag not in ret:
-                ret[tag] = {}
-            description = template[0]
-            ret[tag][identifier] = description
+        for template in sorted(self.templates.values(), key=lambda i: i.tag):
+            if template.tag not in ret:
+                ret[template.tag] = {}
+            ret[template.tag][template.identifier] = template.description
         return ret

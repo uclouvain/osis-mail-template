@@ -80,9 +80,7 @@ class MailTemplateChangeView(PermissionRequiredMixin, generic.FormView):
         identifier = self.kwargs['identifier']
 
         kwargs['view'] = self
-        kwargs['identifier'] = identifier
-        kwargs['tokens'] = templates.get_tokens(identifier)
-        kwargs['description'] = templates.get_description(identifier)
+        kwargs['template'] = templates.get_mail_template(identifier)
 
         if 'forms' not in kwargs:
             kwargs['forms'] = self.get_forms()

@@ -28,13 +28,13 @@
 
 {% block breadcrumb %}
   <li><a href="{% url 'osis_mail_template:list' %}">{% trans 'Mail templates' %}</a></li>
-  <li class="active">{{ identifier }}</li>
+  <li class="active">{{ template.identifier }}</li>
 {% endblock %}
 
 {% block content %}
   <div class="page-header">
     <h1 class="h3">
-      {% blocktrans %}Change <em>{{ description }}</em> mail template{% endblocktrans %}
+      {% blocktrans %}Change <em>{{ template.description }}</em> mail template{% endblocktrans %}
     </h1>
   </div>
   <div class="row">
@@ -73,7 +73,7 @@
         </thead>
 
         <tbody>
-        {% for token in tokens %}
+        {% for token in template.tokens %}
           <tr>
             <td>{{ '{'|add:token.name|add:'}' }}</td>
             <td>{{ token.description }}</td>

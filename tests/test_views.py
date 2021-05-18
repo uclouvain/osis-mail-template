@@ -31,7 +31,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from base.tests.factories.user import UserFactory
-from osis_mail_template import Token
+from osis_mail_template import Token, Template
 from osis_mail_template.models import MailTemplate
 
 
@@ -41,19 +41,15 @@ class TestMailTemplateViews(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        template = Template(cls.TEMPLATE_ID, 'Some mail template',
+                            [Token('token', 'Token description', 'Example value')], )
         cls.registry = patch('osis_mail_template.templates', **{
             'get_list_by_tag.return_value': {
                 'some tag': {
                     'identifier': 'Custom description'
                 }
             },
-            'get_tokens.return_value': [
-                Token('token', 'Token description', 'Example value'),
-            ],
-            'get_description.return_value': 'Some mail template',
-            'get_example_values.return_value': {
-                'token': 'Example value',
-            },
+            'get_mail_template.return_value': template,
         })
         cls.url = reverse('osis_mail_template:change', kwargs={'identifier': cls.TEMPLATE_ID})
         cls.registry.start()
