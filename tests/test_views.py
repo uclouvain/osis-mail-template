@@ -131,9 +131,14 @@ class TestMailTemplateAutocompleteViews(TestCase):
 
     def test_autocomplete(self):
         response = self.client.get(reverse('osis_mail_template:autocomplete'))
-        self.maxDiff = None
         self.assertJSONEqual(response.content.decode('utf8'), json.dumps({"results": [
             {"id": "identifier-1-1", "text": "Description 1 - 1"},
+            {"id": "identifier-1-2", "text": "Description 1 - 2"},
+            {"id": "identifier-2-1", "text": "Description 2 - 1"},
+        ]}))
+
+        response = self.client.get(reverse('osis_mail_template:autocomplete'), {'q': '2'})
+        self.assertJSONEqual(response.content.decode('utf8'), json.dumps({"results": [
             {"id": "identifier-1-2", "text": "Description 1 - 2"},
             {"id": "identifier-2-1", "text": "Description 2 - 1"},
         ]}))
