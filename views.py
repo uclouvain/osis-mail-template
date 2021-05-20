@@ -23,8 +23,11 @@
 #    see http://www.gnu.org/licenses/.
 #
 # ##############################################################################
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views import generic
+
+from dal import autocomplete
 
 from osis_mail_template.forms import MailTemplateConfigureForm
 from osis_mail_template.models import MailTemplate
@@ -98,3 +101,19 @@ class MailTemplatePreview(PermissionRequiredMixin, generic.TemplateView):
         identifier = self.kwargs['identifier']
         context['instances'] = MailTemplate.objects.get_by_id(identifier)
         return context
+
+
+class MailTemplateAutocomplete(autocomplete.Select2ListView):
+    def get(self, request, *args, **kwargs):
+        from osis_mail_template import templates
+        choices = templates.get_mail_templates().items()
+
+        tag = self.forwarded.get('tag', None)
+        if tag is not None:
+            choices = filter(lambda couple: couple[1][2] == tag, choices)
+        if self.q:
+            choices = filter(lambda couple: self.q in couple[1][0], choices)
+        choices = sorted(choices, key=lambda couple: couple[1][0])
+
+        results = [{'id': value, 'text': template[0]} for value, template in choices]
+        return JsonResponse({'results': results}, content_type='application/json')

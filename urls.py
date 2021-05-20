@@ -32,4 +32,5 @@ urlpatterns = [
     path('admin/osis_mail_template', views.MailTemplateListView.as_view(), name='list'),
     path('admin/osis_mail_template/<str:identifier>/change', views.MailTemplateChangeView.as_view(), name='change'),
     path('admin/osis_mail_template/<str:identifier>/preview', views.MailTemplatePreview.as_view(), name='preview'),
+    path('autocomplete/osis_mail_template', views.MailTemplateAutocomplete.as_view(), name='autocomplete'),
 ]
