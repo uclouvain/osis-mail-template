@@ -113,6 +113,7 @@ class MailTemplateAutocomplete(autocomplete.Select2ListView):
             choices = filter(lambda couple: couple[1][2] == tag, choices)
         if self.q:
             choices = filter(lambda couple: self.q in couple[1][0], choices)
+        choices = sorted(choices, key=lambda couple: couple[1][0])
 
         results = [{'id': value, 'text': template[0]} for value, template in choices]
         return JsonResponse({'results': results}, content_type='application/json')

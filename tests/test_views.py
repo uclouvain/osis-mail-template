@@ -23,6 +23,7 @@
 #    see http://www.gnu.org/licenses/.
 #
 # ##############################################################################
+import json
 from unittest.mock import patch
 
 from django.contrib.auth.models import Permission
@@ -130,18 +131,19 @@ class TestMailTemplateAutocompleteViews(TestCase):
 
     def test_autocomplete(self):
         response = self.client.get(reverse('osis_mail_template:autocomplete'))
-        self.assertJSONEqual(response.content, {"results": [
+        self.maxDiff = None
+        self.assertJSONEqual(response.content.decode('utf8'), json.dumps({"results": [
             {"id": "identifier-1-1", "text": "Description 1 - 1"},
             {"id": "identifier-1-2", "text": "Description 1 - 2"},
             {"id": "identifier-2-1", "text": "Description 2 - 1"},
-        ]})
+        ]}))
 
     def test_autocomplete_filtered_by_tag(self):
         response = self.client.get(
             reverse('osis_mail_template:autocomplete'),
             {'forward': '{"tag": "Tag 1"}'},
         )
-        self.assertJSONEqual(response.content, {"results": [
+        self.assertJSONEqual(response.content.decode('utf8'), json.dumps({"results": [
             {"id": "identifier-1-1", "text": "Description 1 - 1"},
             {"id": "identifier-1-2", "text": "Description 1 - 2"},
-        ]})
+        ]}))
