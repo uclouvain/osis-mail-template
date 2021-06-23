@@ -62,7 +62,7 @@ def generate_email(mail_template_id: str, language: str, tokens: Dict[str, str],
     msg['From'] = sender or settings.DEFAULT_FROM_EMAIL
     msg['To'] = recipients
     msg.set_content(text_content)
-    msg.add_alternative(html_content, subtype="text/html")
+    msg.add_alternative(html_content, subtype="html")
     return msg
 
 

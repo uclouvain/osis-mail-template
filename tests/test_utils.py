@@ -68,11 +68,28 @@ class GenerateEmailMessageTestCase(TestCase):
         )
 
     def test_generate_message(self):
-        email_message = generate_email(self.TEMPLATE_ID, 'en', {'token': 'my real value'}, ['to@example.com'])
+        tokens = {'token': 'my real value'}
+        email_message = generate_email(self.TEMPLATE_ID, 'en', tokens, ['to@example.com'])
         self.assertTrue(email_message.is_multipart())
         self.assertEqual(email_message['From'], settings.DEFAULT_FROM_EMAIL)
         self.assertIn('<html', email_message.as_string())
         self.assertIn('my real value</p>', email_message.as_string())
+        self.assertTrue(email_message.is_multipart())
+
+        # Now check the payload of each part (plain text and html)
+        plain_part = ''
+        html_part = ''
+        for part in email_message.walk():
+            if part.get_content_type() == "text/plain":
+                plain_part = part.get_payload()
+            elif part.get_content_type() == "text/html":
+                html_part = part.get_payload()
+        self.assertEqual(plain_part, self.template.body_as_plain(tokens))
+        self.assertIn(self.template.body_as_html(tokens), html_part)
+        self.assertEqual(
+            email_message.get("subject"),
+            self.template.render_subject(tokens),
+        )
 
 
 class RenderEmailContentTestCase(TestCase):
