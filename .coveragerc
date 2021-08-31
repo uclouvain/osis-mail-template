@@ -1,5 +1,5 @@
 [run]
-source = osis_mail_template
+source = osis_mail_template/osis_mail_template
 omit =
     */migrations/*
     */tests/*

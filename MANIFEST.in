@@ -1,0 +1,3 @@
+recursive-include osis_mail_template/static *
+recursive-include osis_mail_template/template *
+recursive-include osis_mail_template/locale *

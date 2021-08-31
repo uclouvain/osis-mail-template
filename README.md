@@ -18,6 +18,22 @@ Requirements
 How to install ?
 ================
 
+## For production
+
+```bash
+# From your osis install, with python environment activated
+pip install git+https://github.com/uclouvain/osis-mail-template.git@dev#egg=osis_mail_template
+```
+
+## For development
+
+```bash
+# From your osis install, with python environment activated
+git clone git@github.com:uclouvain/osis-mail-template.git
+pip install -e ./osis-mail-template
+```
+
+
 Configuring Django
 ------------------
 
@@ -115,6 +131,7 @@ L'équipe OSIS</p>
 
 class Migration(migrations.Migration):
     dependencies = [
+        ('osis_mail_template', '0001_initial'),
         ...
     ]
 
