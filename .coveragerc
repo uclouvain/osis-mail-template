@@ -1,0 +1,15 @@
+[run]
+source = osis_mail_template/osis_mail_template
+omit =
+    */migrations/*
+    */tests/*
+    */admin.py
+
+[report]
+precision = 2
+sort = Miss
+skip_covered = True
+show_missing = True
+exclude_lines =
+    pragma: no cover
+    raise NotImplementedError
