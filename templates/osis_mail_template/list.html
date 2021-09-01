@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+{% load static %}
+{% load i18n %}
+
+{% comment "License" %}
+  * OSIS stands for Open Student Information System. It's an application
+  * designed to manage the core business of higher education institutions,
+  * such as universities, faculties, institutes and professional schools.
+  * The core business involves the administration of students, teachers,
+  * courses, programs and so on.
+  *
+  * Copyright (C) 2015-2019 Université catholique de Louvain (http://www.uclouvain.be)
+  *
+  * This program is free software: you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation, either version 3 of the License, or
+  * (at your option) any later version.
+  *
+  * This program is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+  *
+  * A copy of this license - GNU General Public License - is available
+  * at the root of the source code of this program.  If not,
+  * see http://www.gnu.org/licenses/.
+{% endcomment %}
+
+{% block breadcrumb %}
+  <li class="active">{% trans 'Mail templates' %}</li>
+{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <h2>{% trans 'Mail templates' %}</h2>
+  </div>
+  {% for tag, templates in tagged.items %}
+    <div class="panel panel-default">
+      {% if tag %}
+        <div class="panel-heading">
+          <h3 class="panel-title">{{ tag|capfirst }}</h3>
+        </div>
+      {% endif %}
+      <ul class="list-group">
+        {% for identifier, description in templates.items %}
+          {% url 'osis_mail_template:preview' identifier as preview_url %}
+          {% url 'osis_mail_template:change' identifier as change_url %}
+          <li class="list-group-item container-fluid">
+            {{ description }}
+            <div class="pull-right">
+              <a href="{{ change_url }}" class="btn btn-default">
+                <span class="fa fa-edit"></span>
+                {% trans "Configure" %}
+              </a>
+              <a href="{{ preview_url }}" class="btn btn-default">
+                <span class="fa fa-eye"></span>
+                {% trans "Preview" %}
+              </a>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+{% endblock %}

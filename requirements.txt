@@ -1,0 +1,8 @@
+# These are already in the main project
+# django>=2.2
+# django-bootstrap3>=11.1.0
+# django-ckeditor>=5.7,<6.0
+# django-autocomplete-light>=3.5.1,<4.0
+#
+# Real dependencies
+html2text>=2020
