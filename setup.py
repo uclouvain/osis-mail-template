@@ -33,7 +33,7 @@ setup(
     author='Université catholique de Louvain',
     author_email='O365G-team-osis-dev@groupes.uclouvain.be',
     license='AGPLv3',
-    packages=find_packages(exclude=('osis_mail_template.tests',)),
+    packages=find_packages(exclude=('osis_mail_template.tests', 'osis_mail_template.tests.*')),
     include_package_data=True,
     install_requires=[
         'html2text>=2020',
