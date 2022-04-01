@@ -28,14 +28,24 @@ from typing import Dict
 from django.conf import settings
 from django.db.migrations import RunPython
 
-from osis_mail_template.exceptions import EmptyMailTemplateContent
-
 
 class MailTemplateMigration(RunPython):
-    def __init__(self, identifier: str, subjects: Dict[str, str], contents: Dict[str, str]):
+    def __init__(self, identifier: str, subjects: Dict[str, str], contents: Dict[str, str], remove_on_reverse=True):
         def forward(apps, schema_editor):
+            from osis_mail_template import templates
+            from osis_mail_template.exceptions import EmptyMailTemplateContent, UnknownToken
+
             MailTemplate = apps.get_model('osis_mail_template', 'MailTemplate')
             for lang, _ in settings.LANGUAGES:
+                # Some basic validation
+                tokens = templates.get_example_values(identifier)
+                try:
+                    subjects[lang].format(**tokens)
+                    contents[lang].format(**tokens)
+                except KeyError as e:
+                    raise UnknownToken(e.args[0], identifier)
+
+                # Save the model instance
                 try:
                     MailTemplate.objects.get_or_create(
                         identifier=identifier,
@@ -43,9 +53,14 @@ class MailTemplateMigration(RunPython):
                         defaults=dict(
                             subject=subjects[lang],
                             body=contents[lang],
-                        )
+                        ),
                     )
                 except KeyError:  # pragma: no cover
                     raise EmptyMailTemplateContent(identifier, lang)
 
-        super().__init__(forward, RunPython.noop)
+        def reverse(apps, schema_editor):
+            MailTemplate = apps.get_model('osis_mail_template', 'MailTemplate')
+            # Remove all model instances
+            MailTemplate.objects.filter(identifier=identifier).delete()
+
+        super().__init__(forward, reverse_code=reverse if remove_on_reverse else RunPython.noop)
