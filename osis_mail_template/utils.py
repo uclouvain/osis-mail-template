@@ -29,6 +29,7 @@ from typing import List, Dict, Tuple
 import html2text
 from django.conf import settings
 from django.template.loader import render_to_string
+from django.utils import translation
 
 
 def generate_email(mail_template_id: str, language: str, tokens: Dict[str, str], recipients: List[str],
@@ -47,13 +48,18 @@ def generate_email(mail_template_id: str, language: str, tokens: Dict[str, str],
 
     # Get the mail template
     template = MailTemplate.objects.get_mail_template(mail_template_id, language)
-    subject = template.render_subject(tokens)
-    html_content = render_to_string('osis_mail_template/base_email.html', {
-        'subject': subject,
-        'language': language,
-        'content': template.body_as_html(tokens),
-    })
-    text_content = template.body_as_plain(tokens)
+
+    # Format the content in the provided language (in case of lazy translations in tokens)
+    with translation.override(language):
+        subject = template.render_subject(tokens)
+        html_content = render_to_string('osis_mail_template/base_email.html', {
+            'subject': subject,
+            'language': language,
+            'recipients': recipients,
+            'sender': sender,
+            'content': template.body_as_html(tokens),
+        })
+        text_content = template.body_as_plain(tokens)
 
     # Construct the message
     msg = EmailMessage()

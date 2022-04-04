@@ -56,6 +56,13 @@ class MissingToken(Exception):
         ) % {'token': token})
 
 
+class UnknownToken(Exception):
+    def __init__(self, token, identifier) -> None:
+        super().__init__(_(
+            "The token '%(token)s' is not declared in '%(identifier)s' mail template."
+        ) % {'token': token, 'identifier': identifier})
+
+
 class EmptyMailTemplateContent(Exception):
     def __init__(self, identifier, language=None) -> None:
         if language:
