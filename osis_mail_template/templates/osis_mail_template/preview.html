@@ -64,4 +64,8 @@
       </div>
     </div>
   {% endfor %}
+  {% url 'osis_mail_template:change' identifier as change_url %}
+  <a href="{{ change_url }}" class="btn btn-default">
+    <span class="fa fa-edit"></span> {% trans "Configure" %}
+  </a>
 {% endblock %}

@@ -23,11 +23,12 @@
 #    see http://www.gnu.org/licenses/.
 #
 # ##############################################################################
-from django.http import JsonResponse
-from django.urls import reverse_lazy
-from django.views import generic
-
 from dal import autocomplete
+from django.contrib import messages
+from django.http import JsonResponse
+from django.shortcuts import resolve_url
+from django.utils.translation import gettext_lazy as _
+from django.views import generic
 
 from osis_mail_template.forms import MailTemplateConfigureForm
 from osis_mail_template.models import MailTemplate
@@ -49,8 +50,12 @@ class MailTemplateListView(PermissionRequiredMixin, generic.TemplateView):
 class MailTemplateChangeView(PermissionRequiredMixin, generic.FormView):
     forms = None
     template_name = 'osis_mail_template/change.html'
-    success_url = reverse_lazy('osis_mail_template:list')
     permission_required = 'osis_mail_template.configure'
+
+    def get_success_url(self) -> str:
+        if self.request.POST.get('_preview'):
+            return resolve_url('osis_mail_template:preview', identifier=self.kwargs['identifier'])
+        return resolve_url('osis_mail_template:list')
 
     def get_forms(self, form_class=None):
         if not self.forms:
@@ -70,9 +75,9 @@ class MailTemplateChangeView(PermissionRequiredMixin, generic.FormView):
         if all(form.is_valid() for form in forms):
             for form in forms:
                 form.save()
+            messages.info(self.request, _("Mail template saved successfully."))
             return self.form_valid(forms)
-        else:
-            return self.form_invalid(forms)
+        return self.form_invalid(forms)
 
     def form_invalid(self, forms):
         return self.render_to_response(self.get_context_data(forms=forms))
