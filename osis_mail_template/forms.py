@@ -38,8 +38,19 @@ class MailTemplateConfigureForm(forms.ModelForm):
             'body',
         ]
         widgets = {
-            'body': CKEditorWidget(config_name='osis_mail_template')
+            'body': CKEditorWidget(config_name='osis_mail_template'),
         }
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+        # This is used in MailTemplateAdminForm
+        if 'identifier' in self.fields:
+            from osis_mail_template import templates
+
+            self.fields['identifier'] = forms.ChoiceField(
+                choices=[(identifier, template[0]) for identifier, template in templates.get_mail_templates().items()]
+            )
 
     def check_tokens(self, field: str) -> str:
         """Check if used tokens are not undefined by using example values"""
@@ -51,9 +62,8 @@ class MailTemplateConfigureForm(forms.ModelForm):
             data.format(**tokens)
         except KeyError as e:
             raise forms.ValidationError(
-                _("The token '%(token)s' is not specified, please use only valid tokens from the list.") % {
-                    'token': e.args[0],
-                }
+                _("The token '%(token)s' is not specified, please use only valid tokens from the list.")
+                % {'token': e.args[0]}
             )
         return data
 

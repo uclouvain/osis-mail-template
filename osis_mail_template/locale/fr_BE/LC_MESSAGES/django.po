@@ -46,6 +46,9 @@ msgstr "Langue"
 msgid "Mail template"
 msgstr "Template d'e-mail"
 
+msgid "Mail template saved successfully."
+msgstr "Template d'e-mail enregistré avec succès."
+
 msgid "Mail templates"
 msgstr "Templates d'e-mail"
 
@@ -57,6 +60,9 @@ msgstr "Prévisualiser"
 
 msgid "Save"
 msgstr "Enregistrer"
+
+msgid "Save and view result"
+msgstr "Enregistrer et voir le résultat"
 
 msgid "Subject"
 msgstr "Sujet"
@@ -83,6 +89,13 @@ msgstr "Le template d'e-mail '%(identifier)s' est déjà défini"
 #, python-format
 msgid "The mail template '%(identifier)s' is not registered."
 msgstr "Le template d'e-mail '%(identifier)s' n'est pas défini"
+
+#, python-format
+msgid ""
+"The token '%(token)s' is not declared in '%(identifier)s' mail template."
+msgstr ""
+"Le token '%(token)s' n'est pas déclaré dans le template d'e-mail "
+"'%(identifier)s'."
 
 #, python-format
 msgid ""

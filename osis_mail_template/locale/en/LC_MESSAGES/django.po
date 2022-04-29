@@ -46,6 +46,9 @@ msgstr ""
 msgid "Mail template"
 msgstr ""
 
+msgid "Mail template saved successfully."
+msgstr ""
+
 msgid "Mail templates"
 msgstr ""
 
@@ -56,6 +59,9 @@ msgid "Preview"
 msgstr ""
 
 msgid "Save"
+msgstr ""
+
+msgid "Save and view result"
 msgstr ""
 
 msgid "Subject"
@@ -80,6 +86,11 @@ msgstr ""
 
 #, python-format
 msgid "The mail template '%(identifier)s' is not registered."
+msgstr ""
+
+#, python-format
+msgid ""
+"The token '%(token)s' is not declared in '%(identifier)s' mail template."
 msgstr ""
 
 #, python-format
