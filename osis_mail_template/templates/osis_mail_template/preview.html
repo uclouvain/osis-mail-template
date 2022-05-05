@@ -33,7 +33,9 @@
 
 {% block content %}
   <div class="page-header">
-    <h2>{% trans 'Mail templates' %}</h2>
+    <h1 class="h3">
+      {% blocktrans %}Preview <em>{{ description }}</em> mail template{% endblocktrans %}
+    </h1>
   </div>
   {% for instance in instances %}
     <h2>{{ instance.get_language_display }}</h2>

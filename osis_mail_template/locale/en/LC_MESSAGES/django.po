@@ -58,6 +58,10 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
+#, python-format
+msgid "Preview <em>%(description)s</em> mail template"
+msgstr ""
+
 msgid "Save"
 msgstr ""
 
