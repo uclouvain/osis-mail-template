@@ -58,6 +58,10 @@ msgstr "Texte brut"
 msgid "Preview"
 msgstr "Prévisualiser"
 
+#, python-format
+msgid "Preview <em>%(description)s</em> mail template"
+msgstr "Prévisualiser le template d'e-mail <em>%(description)s</em>"
+
 msgid "Save"
 msgstr "Enregistrer"
 
