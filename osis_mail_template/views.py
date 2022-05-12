@@ -66,7 +66,8 @@ class MailTemplateChangeView(PermissionRequiredMixin, generic.FormView):
                     data=self.request.POST or None,
                     instance=instance,
                     prefix=instance.language,
-                ) for instance in instances
+                )
+                for instance in instances
             ]
         return self.forms
 
@@ -102,15 +103,19 @@ class MailTemplatePreview(PermissionRequiredMixin, generic.TemplateView):
     permission_required = 'osis_mail_template.configure'
 
     def get_context_data(self, **kwargs):
+        from osis_mail_template import templates
+
         context = super().get_context_data(**kwargs)
         identifier = self.kwargs['identifier']
         context['instances'] = MailTemplate.objects.get_by_id(identifier)
+        context['description'] = templates.get_description(identifier)
         return context
 
 
 class MailTemplateAutocomplete(autocomplete.Select2ListView):
     def get(self, request, *args, **kwargs):
         from osis_mail_template import templates
+
         choices = templates.get_mail_templates().items()
 
         tag = self.forwarded.get('tag', None)
