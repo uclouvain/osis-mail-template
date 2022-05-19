@@ -109,10 +109,6 @@ msgstr ""
 "Le token '%(token)s' n'est pas spécifié, veuillez utiliser uniquement des "
 "tokens valides depuis la liste."
 
-#, python-format
-msgid "The token '%(token)s' value has to be passed for rendering."
-msgstr "La valeur du token '%(token)s' n'a pas été définie pendant le rendu."
-
 msgid "Token"
 msgstr ""
 

@@ -172,9 +172,9 @@ The following parameters are expected:
   a `mail_templates.py` file, will raise an `UnknownMailTemplateIdentifier`
   exception if the mail template does not exist
 * `tokens` is a dictionary mapping token names to their value. Keys must
-  reference all tokens declared, if any is missing, it will raise a
-  `MissingToken` exception. Values must be a string or a lazy string, if not,
-  it wil raise a `TypeError`
+  reference all tokens declared, if any is missing, it will display as
+  `TOKEN_name_UNDEFINED`. Values must be castable as string, if not,
+  it will raise a `TypeError`
 * `recipients` is a list of email as strings to send the email to
 * `language` is a language identifier from `settings.LANGUAGES`, will raise
   an `UnknownLanguage` exception if the language does not exist

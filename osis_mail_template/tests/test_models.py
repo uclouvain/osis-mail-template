@@ -30,7 +30,6 @@ from django.test import SimpleTestCase, TestCase
 from django.utils.translation import gettext_lazy as _
 
 from osis_mail_template.exceptions import (
-    MissingToken,
     UnknownMailTemplateIdentifier,
     UnknownLanguage,
     EmptyMailTemplateContent,
@@ -77,8 +76,7 @@ class MailTemplateModelTest(SimpleTestCase):
         }), 'This is a test body example\n\n')
 
     def test_rendering_missing_token(self):
-        with self.assertRaises(MissingToken):
-            self.template.render_subject({})
+        self.assertEqual(self.template.render_subject({}), 'This is a test subject TOKEN_token_UNDEFINED')
 
     def test_create_non_existant(self):
         with patch('osis_mail_template.templates') as tpl:

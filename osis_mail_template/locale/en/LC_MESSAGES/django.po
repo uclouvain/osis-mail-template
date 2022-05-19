@@ -103,10 +103,6 @@ msgid ""
 "the list."
 msgstr ""
 
-#, python-format
-msgid "The token '%(token)s' value has to be passed for rendering."
-msgstr ""
-
 msgid "Token"
 msgstr ""
 
