@@ -106,3 +106,8 @@ def transform_html_to_text(html: str) -> str:
     h.wrap_list_items = True
     h.use_automatic_links = True
     return h.handle(html)
+
+
+class MissingTokenDict(dict):
+    def __missing__(self, key):
+        return "TOKEN_{}_UNDEFINED".format(key)

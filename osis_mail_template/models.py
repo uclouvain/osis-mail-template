@@ -31,11 +31,10 @@ from django.utils.translation import gettext_lazy as _
 
 from osis_mail_template.exceptions import (
     EmptyMailTemplateContent,
-    MissingToken,
     UnknownMailTemplateIdentifier,
     UnknownLanguage,
 )
-from osis_mail_template.utils import transform_html_to_text
+from osis_mail_template.utils import MissingTokenDict, transform_html_to_text
 
 
 class MailTemplateManager(models.Manager):
@@ -104,10 +103,8 @@ class MailTemplate(models.Model):
         if tokens is None:
             from osis_mail_template import templates
             tokens = templates.get_example_values(self.identifier)
-        try:
-            return getattr(self, field).format(**tokens)
-        except KeyError as e:
-            raise MissingToken(e.args[0])
+        # As we want to avoid runtime errors, we use MissingTokenDict to prevent KeyError and still fill missing tokens
+        return getattr(self, field).format_map(MissingTokenDict(**tokens))
 
     def render_subject(self, tokens: Dict[str, str] = None) -> str:
         """Renders the subject with the given tokens, or example values"""

@@ -31,7 +31,6 @@ __all__ = [
     'UnknownMailTemplateIdentifier',
     'UnknownLanguage',
     'EmptyMailTemplateContent',
-    'MissingToken',
 ]
 
 
@@ -47,13 +46,6 @@ class UnknownMailTemplateIdentifier(ValidationError):
         super().__init__(_(
             "The mail template '%(identifier)s' is not registered."
         ) % {'identifier': identifier})
-
-
-class MissingToken(Exception):
-    def __init__(self, token) -> None:
-        super().__init__(_(
-            "The token '%(token)s' value has to be passed for rendering."
-        ) % {'token': token})
 
 
 class UnknownToken(Exception):
