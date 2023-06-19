@@ -47,7 +47,7 @@ class MailTemplateMigration(RunPython):
 
                 # Save the model instance
                 try:
-                    MailTemplate.objects.get_or_create(
+                    MailTemplate.objects.update_or_create(
                         identifier=identifier,
                         language=lang,
                         defaults=dict(
