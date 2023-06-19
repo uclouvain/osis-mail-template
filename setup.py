@@ -27,7 +27,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='OSIS Mail Template',
-    version='0.1',
+    version='0.2',
     description='Mail template management API and UI',
     url='http://github.com/uclouvain/osis-mail-template',
     author='Université catholique de Louvain',
