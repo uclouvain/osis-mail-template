@@ -83,9 +83,9 @@ class GenerateEmailMessageTestCase(TestCase):
             if part.get_content_type() == "text/plain":
                 plain_part = part.get_payload()
             elif part.get_content_type() == "text/html":
-                html_part = part.get_payload()
+                html_part = part.get_payload(decode=True)
         self.assertEqual(plain_part, self.template.body_as_plain(tokens))
-        self.assertIn(self.template.body_as_html(tokens), html_part)
+        self.assertIn(self.template.body_as_html(tokens), html_part.decode())
         self.assertEqual(
             email_message.get("subject"),
             self.template.render_subject(tokens),
