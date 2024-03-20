@@ -50,6 +50,6 @@ class OsisMailTemplateConfig(AppConfig):
                 ['Link', 'Unlink'],
                 {'name': 'insert', 'items': ['Table']},
             ],
-            'extraAllowedContent': 'span(*)[*]{*};p(*)[*]{*};ul(*)[*]{*}',
+            'extraAllowedContent': 'span(*)[*]{*};p(*)[*]{*};ul(*)[*]{*};div(*)[*]{*}',
             'autoParagraph': False,
         }
